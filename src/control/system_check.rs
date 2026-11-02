@@ -53,11 +53,14 @@ pub fn check_run_privileges(proxy_only: bool) -> Result<()> {
             return Ok(());
         }
 
-        // S-1-16-12288 is the High mandatory level SID present in an elevated token
+        // S-1-16-12288 (High, elevated admin) or S-1-16-16384 (System, service / scheduled task) mandatory level SIDs
         let elevated = std::process::Command::new("whoami")
             .arg("/groups")
             .output()
-            .map(|o| String::from_utf8_lossy(&o.stdout).contains("S-1-16-12288"))
+            .map(|o| {
+                let out = String::from_utf8_lossy(&o.stdout);
+                out.contains("S-1-16-12288") || out.contains("S-1-16-16384")
+            })
             .unwrap_or(false);
         if !elevated {
             bail!(

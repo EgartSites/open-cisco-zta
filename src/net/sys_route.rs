@@ -140,7 +140,7 @@ impl SystemRouteManager {
             .iter()
             .map(|d| d.trim_start_matches("*.").trim().to_string())
             .filter(|d| !d.is_empty() && d.chars().all(|c| c.is_ascii_alphanumeric() || c == '.' || c == '-'))
-            .map(|d| format!("'.{}'", d))
+            .flat_map(|d| [format!("'.{}'", d), format!("'{}'", d)])
             .collect();
 
         if namespaces.is_empty() {
