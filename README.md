@@ -132,6 +132,12 @@ Packages include a systemd service template that is disabled by default. If you 
 # Enroll your machine first:
 open-cisco-zta enroll
 
+# The daemon runs as root, so tell it where your enrollment lives
+# (otherwise it looks in /root/.config/open-cisco-zta):
+sudo systemctl edit open-cisco-zta
+#   [Service]
+#   Environment=OPEN_CISCO_ZTA_CONFIG_DIR=/home/<your-user>/.config/open-cisco-zta
+
 # Start and enable daemon on boot:
 sudo systemctl enable --now open-cisco-zta
 
